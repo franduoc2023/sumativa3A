@@ -1,0 +1,38 @@
+<h2 class="mb-3">Nuevo comentario</h2>
+
+<!-- Formulario para escribir comentario -->
+<form [formGroup]="foroForm" (ngSubmit)="enviarComentario()">
+  <div class="mb-3">
+    <textarea
+      class="form-control"
+      formControlName="comentario"
+      rows="3"
+      placeholder="Escribe tu comentario aquí">
+    </textarea>
+  </div>
+  <button class="btn btn-primary w-100" type="submit" [disabled]="foroForm.invalid">
+    Publicar
+  </button>
+</form>
+
+<!-- Separador -->
+<hr class="my-4">
+
+<h2 class="mb-3">Comentarios</h2>
+
+<!-- si hay comentarios -->
+<div *ngIf="mensajes.length > 0; else sinMensajes">
+  <div *ngFor="let msg of mensajes" class="card mt-2">
+    <div class="card-body">
+      {{ msg.comentario }}
+      <div class="text-muted small">
+        Publicado el {{ msg.fechaCreacion | date:'shortDate' }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- si está vacío -->
+<ng-template #sinMensajes>
+  <p class="text-muted">Aún no hay comentarios.</p>
+</ng-template>

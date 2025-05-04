@@ -1,0 +1,35 @@
+
+<div class="row justify-content-center mb-4">
+    <div class="col-md-6">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Buscar por título"
+        [(ngModel)]="busqueda"
+      />
+    </div>
+  </div>
+  
+
+
+<section class="vh-100 gradient-custom">
+    <div class="container py-5 h-100">
+  
+
+  
+       <div class="row justify-content-center" *ngIf="mostrarForos">
+        <div class="col-12 mb-3" *ngFor="let foro of forosFiltrados()">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">
+                <a [href]="foro.link" class="text-decoration-none" [ngClass]="foro.colorClass">{{ foro.titulo }}</a>
+              </h5>
+              <p class="card-text text-muted">{{ foro.descripcion }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+    </div>
+  </section>
+  

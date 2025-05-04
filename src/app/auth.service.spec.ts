@@ -6,11 +6,25 @@ describe('AuthService', () => {
   let service: AuthService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(AuthService);
+    service = new AuthService();
   });
 
-  it('should be created', () => {
+  it('esta estaba ', () => {
     expect(service).toBeTruthy();
+  });
+
+  it('false al inicializar ', () => {
+    expect(service.isLoggedIn()).toBeFalse();
+  });
+
+  it('true si hago login ()', () => {
+    service.login();
+    expect(service.isLoggedIn()).toBeTrue();
+  });
+
+  it('falso despues de logout()', () => {
+    service.login();  
+    service.logout();  
+    expect(service.isLoggedIn()).toBeFalse();
   });
 });

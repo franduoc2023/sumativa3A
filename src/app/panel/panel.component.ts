@@ -1,28 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router'; 
+import { ActivatedRoute, Router } from '@angular/router'; 
+import { UsuariosService } from '../services/usuario.service';
 
+
+
+declare var bootstrap: any;
 @Component({
   selector: 'app-panel',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './panel.component.html',
-  styleUrl: './panel.component.css'
+  styleUrls: ['./panel.component.css']
 })
+export class PanelComponent implements OnInit {
 
-
- 
-
-export class PanelComponent {
+  getUsuarioPorId!: number;
   registroForm: FormGroup;
-  //userData: any = {};
-  constructor(private fb: FormBuilder, private router: Router) {
+
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private route: ActivatedRoute,
+    private usuarioService: UsuariosService
+  ) {
     this.registroForm = this.fb.group({
-      firstName: [''], 
-      secondName: [''],  
-      firstApp: [''], 
-      secondApp: [''],  
+      nombre: [''],
+      apellido: [''],
+      nombreUsuario: [''],
       password: ['', Validators.compose([
         Validators.minLength(8),
         Validators.pattern('.*[A-Z].*'),
@@ -30,29 +36,75 @@ export class PanelComponent {
         Validators.pattern('.*\\d.*'),
         Validators.pattern('.*[!@#$%^&*(),.?":{}|<>].*')
       ])], 
-      birthdayDate: [''],  
-      gender: [''], 
-      emailAddress: ['', [Validators.required, Validators.email]],  
-      phoneNumber: ['']  
+      fechaNacimiento: [''],
+      email: ['', [Validators.required, Validators.email]]
     });
   }
 
-
   ngOnInit(): void {
-      
+    const id = localStorage.getItem('usuarioId');
+    if (id) {
+      this.usuarioService.getUsuarioPorId(Number(id)).subscribe({
+        next: (data) => {
+          this.getUsuarioPorId = data.id;
+          this.registroForm.patchValue({
+            nombre: data.nombre,
+            apellido: data.apellido,
+            nombreUsuario: data.nombreUsuario,
+            password: data.password,
+            fechaNacimiento: data.fechaNacimiento,
+            email: data.email
+          });
+        },
+        error: (err) => {
+         }
+      });
+    }
   }
- 
+
+
 
   onSubmit(): void {
-    if (this.registroForm.valid) {
-      const updatedUserData = this.registroForm.value;
+    if (this.registroForm.valid && this.getUsuarioPorId) {
+      const datosActualizados = {
+        ...this.registroForm.value,
+        id: this.getUsuarioPorId
+      };
+  
+      this.usuarioService.actualizarUsuario(this.getUsuarioPorId, datosActualizados)
+        .subscribe({
+          next: (res) => {
+             this.mostrarToast();
+          },
+          error: (err) => {
+           
+          }
+        });
+    }
+  }
+  
+  
 
-       
-    }  
+
+
+  mostrarToast() {
+    const toastEl = document.getElementById('liveToast');
+    if (toastEl) {
+      const toast = new bootstrap.Toast(toastEl);
+      toast.show();
+    }
   }
 
-  onDelete(): void {
-     
  
+  onDelete(): void {
+    this.mostrarToast();
+
+ ;
   }
 }
+
+
+// nota el validor del formulario cuando trae el get del backend si tiene la contraseña
+// menos requerimiento que el formulario no activara el botom sumit 
+//el subcribe escucha lambada lleva condicion y luego accion con retorno
+// los metodos de cada CRUD van en servicios aparte 
