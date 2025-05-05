@@ -1,0 +1,6 @@
+projectKey=sumativa3
+serverUrl=http://localhost:9000
+serverVersion=25.4.0.105899
+dashboardUrl=http://localhost:9000/dashboard?id=sumativa3
+ceTaskId=aa51ae84-c1c2-4e7d-823a-89fc1fc0ec17
+ceTaskUrl=http://localhost:9000/api/ce/task?id=aa51ae84-c1c2-4e7d-823a-89fc1fc0ec17
